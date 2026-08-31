@@ -19,6 +19,7 @@ WORKDIR /app
 COPY --from=backend-build /app/project/backend/target/*.jar app.jar
 COPY --from=frontend-build /app/project/dist/public/ ./dist/public/
 
+ENV FRONTEND_PATH=/app/dist/public
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]

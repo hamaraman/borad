@@ -7,7 +7,7 @@ spring:
     time-zone: Asia/Seoul
 
 server:
-  port: ${BACKEND_PORT:8080}
+  port: ${PORT:${BACKEND_PORT:8080}}
 
 app:
   cors:
