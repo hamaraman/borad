@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,20 +18,18 @@ public class SpaController {
     @Value("${app.frontend.path:./dist/public}")
     private String frontendPath;
 
-    /**
-     * Serve index.html for all non-API, non-static-file routes.
-     * This enables React Router to handle client-side routing.
-     */
-    @GetMapping(value = {"/", "/{path:[^\\.]*}"})
-    public ResponseEntity<Resource> serveIndex(HttpServletRequest request) throws IOException {
-        String uri = request.getRequestURI();
+    @GetMapping("/")
+    public ResponseEntity<Resource> serveIndex() throws IOException {
+        return serveHtml("index.html");
+    }
 
-        // Skip API routes — handled by TodoController etc.
-        if (uri.startsWith("/api")) {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/favicon.ico")
+    public ResponseEntity<Resource> serveFavicon() throws IOException {
+        return serveHtml("index.html");
+    }
 
-        Path indexPath = Path.of(frontendPath, "index.html");
+    private ResponseEntity<Resource> serveHtml(String fileName) throws IOException {
+        Path indexPath = Path.of(frontendPath, fileName);
         if (Files.exists(indexPath)) {
             Resource resource = new FileSystemResource(indexPath.toFile());
             return ResponseEntity.ok()
