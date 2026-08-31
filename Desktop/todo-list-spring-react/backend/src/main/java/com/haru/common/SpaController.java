@@ -20,22 +20,38 @@ public class SpaController {
 
     @GetMapping("/")
     public ResponseEntity<Resource> serveIndex() throws IOException {
-        return serveFile("index.html", MediaType.TEXT_HTML);
+        return serveFile("index.html");
     }
 
     @GetMapping("/favicon.ico")
     public ResponseEntity<Resource> serveFavicon() throws IOException {
-        return serveFile("favicon.ico", MediaType.parseMediaType("image/x-icon"));
+        return serveFile("favicon.ico");
     }
 
-    private ResponseEntity<Resource> serveFile(String fileName, MediaType mediaType) throws IOException {
+    private ResponseEntity<Resource> serveFile(String fileName) throws IOException {
         Path filePath = Path.of(frontendPath, fileName);
         if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
             Resource resource = new FileSystemResource(filePath.toFile());
+            MediaType mediaType = getContentType(fileName);
             return ResponseEntity.ok()
                     .contentType(mediaType)
                     .body(resource);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    private MediaType getContentType(String fileName) {
+        if (fileName.endsWith(".html")) return MediaType.TEXT_HTML;
+        if (fileName.endsWith(".css"))  return MediaType.parseMediaType("text/css");
+        if (fileName.endsWith(".js"))   return MediaType.parseMediaType("application/javascript");
+        if (fileName.endsWith(".json")) return MediaType.APPLICATION_JSON;
+        if (fileName.endsWith(".png"))  return MediaType.IMAGE_PNG;
+        if (fileName.endsWith(".jpg"))  return MediaType.IMAGE_JPEG;
+        if (fileName.endsWith(".svg"))  return MediaType.parseMediaType("image/svg+xml");
+        if (fileName.endsWith(".ico"))  return MediaType.parseMediaType("image/x-icon");
+        if (fileName.endsWith(".woff")) return MediaType.parseMediaType("font/woff");
+        if (fileName.endsWith(".woff2"))return MediaType.parseMediaType("font/woff2");
+        if (fileName.endsWith(".ttf"))  return MediaType.parseMediaType("font/ttf");
+        return MediaType.APPLICATION_OCTET_STREAM;
     }
 }
