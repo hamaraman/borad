@@ -23,8 +23,12 @@ public class SpaController {
         return serveHtml("index.html");
     }
 
-    @GetMapping("/favicon.ico")
-    public ResponseEntity<Resource> serveFavicon() throws IOException {
+    /**
+     * SPA fallback: 클라이언트 사이드 라우팅 경로를 index.html로 반환합니다.
+     * 정적 리소스(/assets/*)는 WebConfig의 ResourceHandler가 우선 처리합니다.
+     */
+    @GetMapping(value = {"/{path:^(?!api|assets).*}", "/{path:^(?!api|assets).*}/**"})
+    public ResponseEntity<Resource> serveSpa() throws IOException {
         return serveHtml("index.html");
     }
 
