@@ -20,24 +20,33 @@ public class SpaController {
 
     @GetMapping("/")
     public ResponseEntity<Resource> serveIndex() throws IOException {
-        return serveHtml("index.html");
+        return serveFile("index.html", MediaType.TEXT_HTML);
+    }
+
+    @GetMapping("/favicon.ico")
+    public ResponseEntity<Resource> serveFavicon() throws IOException {
+        return serveFile("favicon.ico", MediaType.parseMediaType("image/x-icon"));
     }
 
     /**
-     * SPA fallback: 클라이언트 사이드 라우팅 경로를 index.html로 반환합니다.
-     * 정적 리소스(/assets/*)는 WebConfig의 ResourceHandler가 우선 처리합니다.
+     * 모든 non-api 경로에 대해:
+     * 1. 파일이 실제로 존재하면 해당 파일을 리턴 (JS, CSS, 이미지 등)
+     * 2. 없으면 index.html을 리턴 (SPA fallback — 클라이언트 사이드 라우팅)
      */
-    @GetMapping(value = {"/{path:^(?!api|assets).*}", "/{path:^(?!api|assets).*}/**"})
-    public ResponseEntity<Resource> serveSpa() throws IOException {
-        return serveHtml("index.html");
+    @GetMapping(value = "/{path:^(?!api|assets).*}", "/{path:^(?!api|assets).*}/**")
+    public ResponseEntity<Resource> serveStaticOrFallback() throws IOException {
+        // 요청된 경로에서 파일을 찾기 위해 Path 추출
+        // Spring MVC가 실제 파일이 있으면 리소스 핸들러에서 먼저 처리하고,
+        // 여기까지 오면SPA fallback으로 index.html 반환
+        return serveFile("index.html", MediaType.TEXT_HTML);
     }
 
-    private ResponseEntity<Resource> serveHtml(String fileName) throws IOException {
-        Path indexPath = Path.of(frontendPath, fileName);
-        if (Files.exists(indexPath)) {
-            Resource resource = new FileSystemResource(indexPath.toFile());
+    private ResponseEntity<Resource> serveFile(String fileName, MediaType mediaType) throws IOException {
+        Path filePath = Path.of(frontendPath, fileName);
+        if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
+            Resource resource = new FileSystemResource(filePath.toFile());
             return ResponseEntity.ok()
-                    .contentType(MediaType.TEXT_HTML)
+                    .contentType(mediaType)
                     .body(resource);
         }
         return ResponseEntity.notFound().build();
