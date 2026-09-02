@@ -12,20 +12,31 @@ const saveLocalTodos = (todos: Todo[]) => localStorage.setItem("mock_todos", JSO
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   try {
     const response = await fetch(`${API_BASE_URL}${path}`, { headers: { "Content-Type": "application/json", ...(init?.headers || {}) }, ...init });
-    if (!response.ok) {
-      if (response.status === 500 || response.status === 504) throw new Error("Mock");
-      let detail = "요청을 처리하지 못했습니다.";
+
+    // 401/403은 에러로 던짐 (인증 문제)
+    if (response.status === 401 || response.status === 403) {
+      let detail = "인증이 필요합니다.";
       try { const body = await response.json(); detail = body.message || body.error || detail; } catch { /* plain response */ }
       throw new Error(`${response.status}: ${detail}`);
     }
+
+    // 그 외 응답이 정상이 아니거나 JSON이 아닌 경우 → Mock fallback
+    if (!response.ok) {
+      return handleMockRequest<T>(path, init);
+    }
+
     if (response.status === 204) return undefined as T;
+
+    // Content-Type 확인 — JSON이 아니면 Mock fallback
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return handleMockRequest<T>(path, init);
+    }
+
     return response.json() as Promise<T>;
   } catch (err: any) {
-    if (err.message.includes("Mock") || err.name === "TypeError") {
-       // 백엔드가 꺼져있을 때 LocalStorage Fallback 사용
-       return handleMockRequest<T>(path, init);
-    }
-    throw err;
+    // 네트워크 에러 또는 JSON 파싱 에러 → Mock fallback
+    return handleMockRequest<T>(path, init);
   }
 }
 
