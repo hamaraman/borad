@@ -49,7 +49,12 @@ export default function Register() {
     <div className="flex min-h-screen items-center justify-center bg-[#f7f5f0] p-4 font-sans">
       <div className="w-full max-w-sm bg-white p-8 rounded-lg shadow-sm border border-[#e5e0d8] flex flex-col gap-6">
         <div className="text-center">
-          <img src="/logo.jpg" alt="Logo" className="w-16 h-16 mx-auto mb-4 rounded-md" />
+          <img 
+            src="/logo.jpg" 
+            alt="Logo" 
+            className="w-16 h-16 mx-auto mb-4 rounded-md cursor-pointer hover:opacity-80 transition-opacity" 
+            onClick={() => setLocation("/")}
+          />
           <h1 className="text-2xl font-bold text-[#2d2926]">오늘할일.</h1>
           <p className="text-sm text-[#7a756d] mt-2">새로운 기록을 시작하세요</p>
         </div>

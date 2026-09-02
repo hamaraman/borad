@@ -16,13 +16,19 @@ function ProtectedRoute({ component: Component }: { component: any }) {
   return <Component />;
 }
 
+import Landing from "./pages/Landing";
+
 function AppRoutes() {
+  const { user } = useAuth();
   return (
     <Switch>
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
-      <Route path="/">
+      <Route path="/app">
         <ProtectedRoute component={Home} />
+      </Route>
+      <Route path="/">
+        {user ? <Redirect to="/app" /> : <Landing />}
       </Route>
       <Route>
         <Redirect to="/" />

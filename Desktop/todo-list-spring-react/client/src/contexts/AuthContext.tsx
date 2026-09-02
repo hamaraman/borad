@@ -35,14 +35,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
-    setLocation("/");
+    setLocation("/app");
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
-    setLocation("/login");
+    setLocation("/");
   };
 
   return (
