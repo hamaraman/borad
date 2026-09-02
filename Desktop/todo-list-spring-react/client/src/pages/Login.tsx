@@ -83,6 +83,24 @@ export default function Login() {
           <Button type="submit" className="w-full mt-2" disabled={isLoading}>
             {isLoading ? "로그인 중..." : "로그인"}
           </Button>
+          
+          <div className="relative flex items-center py-2">
+            <div className="flex-grow border-t border-[#e5e0d8]"></div>
+            <span className="flex-shrink-0 mx-4 text-[#7a756d] text-xs">또는</span>
+            <div className="flex-grow border-t border-[#e5e0d8]"></div>
+          </div>
+
+          <Button 
+            type="button" 
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+               toast.success("테스트 계정으로 접속합니다.");
+               login("test-token", { id: 999, username: "테스트계정" });
+            }}
+          >
+            테스트 계정으로 체험하기
+          </Button>
         </form>
         
         <div className="text-center text-sm text-[#7a756d]">

@@ -1,9 +1,11 @@
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
+  const { login } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#f7f5f0] text-[#2d2926] font-sans flex flex-col">
@@ -46,13 +48,24 @@ export default function Landing() {
           오늘 집중해야 할 단 하나의 일에만 몰입하세요.
         </p>
 
-        <Button 
-          size="lg" 
-          onClick={() => setLocation("/register")}
-          className="bg-[#d96c4a] hover:bg-[#c25c3c] text-white rounded-full px-8 h-14 text-lg shadow-sm flex gap-2 items-center"
-        >
-          무료로 시작하기 <ArrowRight size={20} />
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
+          <Button 
+            size="lg" 
+            onClick={() => setLocation("/register")}
+            className="bg-[#d96c4a] hover:bg-[#c25c3c] text-white rounded-full px-8 h-14 text-lg shadow-sm flex gap-2 items-center"
+          >
+            무료로 시작하기 <ArrowRight size={20} />
+          </Button>
+          
+          <Button 
+            size="lg" 
+            variant="outline"
+            onClick={() => login("test-token", { id: 999, username: "테스트계정" })}
+            className="rounded-full px-8 h-14 text-lg border-[#e5e0d8] text-[#5c5851] hover:bg-[#faf9f7]"
+          >
+            테스트 계정으로 체험
+          </Button>
+        </div>
 
         {/* Feature Teaser */}
         <div className="mt-20 relative w-full aspect-video max-w-4xl bg-white rounded-xl shadow-sm border border-[#e5e0d8] overflow-hidden flex items-center justify-center p-8">
