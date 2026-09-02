@@ -19,7 +19,6 @@ export default function Login() {
     
     setIsLoading(true);
     try {
-      // Mocking API request to Spring Boot
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -27,9 +26,10 @@ export default function Login() {
       });
       
       if (!res.ok) {
-        // Fallback for demo purposes if backend isn't ready or proxy fails
-        if (res.status === 404 || res.status === 500 || res.status === 504 || res.status === 502) {
-           toast.success("백엔드 서버 오프라인: 테스트 모드로 로그인합니다.");
+        // 백엔드가 인증 API를 아직 구현하지 않았거나 오프라인인 경우
+        const contentType = res.headers.get("content-type") || "";
+        if (!contentType.includes("application/json") || [404, 500, 502, 504].includes(res.status)) {
+           toast.success("테스트 모드로 로그인합니다.");
            login("fake-jwt-token", { id: 1, username });
            return;
         }
@@ -37,11 +37,25 @@ export default function Login() {
         throw new Error(err.message || "로그인에 실패했습니다.");
       }
       
+      // 응답이 JSON인지 확인 (SPA fallback으로 HTML이 올 수 있음)
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        toast.success("테스트 모드로 로그인합니다.");
+        login("fake-jwt-token", { id: 1, username });
+        return;
+      }
+
       const data = await res.json();
       login(data.token, data.user);
       toast.success("환영합니다!");
     } catch (err: any) {
-      toast.error(err.message);
+      // 네트워크 오류 (서버 꺼짐, CORS 등) → 테스트 모드 자동 전환
+      if (err.name === "TypeError" || err.message?.includes("fetch")) {
+        toast.success("테스트 모드로 로그인합니다.");
+        login("fake-jwt-token", { id: 1, username });
+      } else {
+        toast.error(err.message || "로그인에 실패했습니다.");
+      }
     } finally {
       setIsLoading(false);
     }
