@@ -219,20 +219,26 @@ const plugins = [
       enabled: true
     },
     manifest: {
-      name: '오늘할일',
+      name: '오늘할일 - TodoList',
       short_name: '오늘할일',
       description: '종이 질감의 편집 디자인 생산성 앱',
-      theme_color: '#ffffff',
+      start_url: '/',
+      display: 'standalone',
+      background_color: '#f7f5f0',
+      theme_color: '#2d2926',
+      orientation: 'portrait-primary',
       icons: [
         {
           src: '/logo.jpg',
           sizes: '192x192',
-          type: 'image/jpeg'
+          type: 'image/jpeg',
+          purpose: 'any'
         },
         {
           src: '/logo.jpg',
           sizes: '512x512',
-          type: 'image/jpeg'
+          type: 'image/jpeg',
+          purpose: 'any maskable'
         }
       ]
     }
