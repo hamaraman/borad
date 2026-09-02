@@ -1,47 +1,25 @@
 # Stage 1: Build frontend
 FROM node:20-slim AS frontend-build
 WORKDIR /app
-HEAD
 COPY Desktop/todo-list-spring-react/ ./project/
 RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
 RUN cd project && pnpm install --frozen-lockfile
 RUN cd project && pnpm build
 
-COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
-RUN pnpm install --frozen-lockfile
-COPY client/ ./client/
-COPY vite.config.ts tsconfig.json tsconfig.node.json ./
-RUN pnpm build
- c4cc4a1f6629ef76736e2ad81f026b335262a8ea
-
 # Stage 2: Build backend
 FROM maven:3.9-eclipse-temurin-17 AS backend-build
 WORKDIR /app
-<<<<<<< HEAD
 COPY Desktop/todo-list-spring-react/backend/ ./project/backend/
 RUN cd project/backend && mvn dependency:go-offline -B
 RUN cd project/backend && mvn clean package -DskipTests
 
-COPY backend/pom.xml ./backend/pom.xml
-RUN cd backend && mvn dependency:go-offline -B
-COPY backend/src ./backend/src
-RUN cd backend && mvn clean package -DskipTests
- c4cc4a1f6629ef76736e2ad81f026b335262a8ea
-
 # Stage 3: Final image
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
- HEAD
 COPY --from=backend-build /app/project/backend/target/*.jar app.jar
 COPY --from=frontend-build /app/project/dist/public/ ./dist/public/
 
 ENV FRONTEND_PATH=/app/dist/public
-
-COPY --from=backend-build /app/backend/target/*.jar app.jar
-COPY --from=frontend-build /app/dist/public/ ./dist/public/
-
-c4cc4a1f6629ef76736e2ad81f026b335262a8ea
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
