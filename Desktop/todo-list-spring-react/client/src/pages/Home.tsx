@@ -316,7 +316,7 @@ export default function Home() {
       {/* Sidebar */}
       <aside className="index-rail">
         <div className="brand-lockup">
-          <img src="/manus-storage/paper-ledger-logo_d2e58458.png" alt="오늘할일" />
+          <img src="/logo.jpg" alt="오늘할일" />
           <span>
             오늘
             <br />
