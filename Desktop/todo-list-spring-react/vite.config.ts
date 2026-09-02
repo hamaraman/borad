@@ -214,15 +214,29 @@ const plugins = [
   vitePluginStorageProxy(),
   VitePWA({
     registerType: 'autoUpdate',
-    includeAssets: ['logo.jpg'],
+    includeAssets: ['public/logo.jpg'],
     devOptions: {
       enabled: true
     },
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff,woff2}'],
+      navigateFallback: 'index.html',
+      navigateFallbackDenylist: [/^\/api\//, /^\/workbox-/],
+      runtimeCaching: [
+        {
+          urlPattern: /^\/api\//,
+          handler: 'NetworkOnly',
+        },
+      ],
+    },
     manifest: {
+      id: '/',
       name: '오늘할일 - TodoList',
       short_name: '오늘할일',
       description: '종이 질감의 편집 디자인 생산성 앱',
       start_url: '/',
+      scope: '/',
+      lang: 'ko',
       display: 'standalone',
       background_color: '#f7f5f0',
       theme_color: '#2d2926',
@@ -238,7 +252,7 @@ const plugins = [
           src: '/logo.jpg',
           sizes: '512x512',
           type: 'image/jpeg',
-          purpose: 'any maskable'
+          purpose: 'maskable'
         }
       ]
     }
