@@ -27,9 +27,9 @@ export default function Login() {
       });
       
       if (!res.ok) {
-        // Fallback for demo purposes if backend isn't ready
-        if (res.status === 404) {
-           toast.success("테스트 모드로 로그인합니다.");
+        // Fallback for demo purposes if backend isn't ready or proxy fails
+        if (res.status === 404 || res.status === 500 || res.status === 504 || res.status === 502) {
+           toast.success("백엔드 서버 오프라인: 테스트 모드로 로그인합니다.");
            login("fake-jwt-token", { id: 1, username });
            return;
         }
