@@ -215,6 +215,9 @@ const plugins = [
   VitePWA({
     registerType: 'autoUpdate',
     includeAssets: ['logo.jpg'],
+    devOptions: {
+      enabled: true
+    },
     manifest: {
       name: '오늘할일',
       short_name: '오늘할일',
