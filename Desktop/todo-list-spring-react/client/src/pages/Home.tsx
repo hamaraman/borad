@@ -187,6 +187,7 @@ export default function Home() {
     category: "업무",
   });
   const [viewMode, setViewMode] = useState<"list" | "card">("list");
+  const [stats, setStats] = useState({ all: 0, open: 0, done: 0 });
 
   const pageSize = 8;
   const openCount = todos.filter((t) => !t.completed).length;
@@ -208,6 +209,18 @@ export default function Home() {
       setTodos(result.content);
       setTotalPages(Math.max(1, result.totalPages));
       setTotalElements(result.totalElements);
+
+      // Fetch stats
+      const [allRes, openRes, doneRes] = await Promise.all([
+        todosApi.list(1, 1, "all", ""),
+        todosApi.list(1, 1, "open", ""),
+        todosApi.list(1, 1, "done", ""),
+      ]);
+      setStats({
+        all: allRes.totalElements,
+        open: openRes.totalElements,
+        done: doneRes.totalElements,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "API에 연결할 수 없습니다.");
     } finally {
@@ -311,7 +324,6 @@ export default function Home() {
           </span>
         </div>
         <div className="rail-rule" />
-        <p className="eyebrow">INDEX / 08—26</p>
         <nav className="rail-nav" aria-label="목록 필터">
           <button
             className={filter === "all" ? "active" : ""}
@@ -319,7 +331,7 @@ export default function Home() {
           >
             <LayoutList size={18} />
             전체 기록
-            <span>{filter === "all" ? totalElements : "—"}</span>
+            <span>{stats.all}</span>
           </button>
           <button
             className={filter === "open" ? "active" : ""}
@@ -327,7 +339,7 @@ export default function Home() {
           >
             <Inbox size={18} />
             진행 중
-            <span>{filter === "open" ? totalElements : "—"}</span>
+            <span>{stats.open}</span>
           </button>
           <button
             className={filter === "done" ? "active" : ""}
@@ -335,7 +347,7 @@ export default function Home() {
           >
             <Check size={18} />
             완료됨
-            <span>{filter === "done" ? totalElements : "—"}</span>
+            <span>{stats.done}</span>
           </button>
         </nav>
         <div className="rail-note">
