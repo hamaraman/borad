@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Todo, todosApi } from "@/lib/todos-api";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   DndContext,
   closestCenter,
@@ -170,6 +171,7 @@ function SortableItem({
 }
 
 export default function Home() {
+  const { user, logout } = useAuth();
   const [todos, setTodos] = useState<Todo[]>([]);
   const [filter, setFilter] = useState<"all" | "open" | "done">("all");
   const [query, setQuery] = useState("");
@@ -362,8 +364,10 @@ export default function Home() {
           </div>
         </div>
         <div className="rail-footer">
-          <span>v 2.0.0</span>
-          <span>API LEDGER</span>
+          <div className="flex justify-between w-full items-center">
+            <span className="text-xs truncate max-w-[80px]">{user?.username || 'User'}</span>
+            <button onClick={logout} className="text-xs hover:underline text-[#d96c4a]">로그아웃</button>
+          </div>
         </div>
       </aside>
 

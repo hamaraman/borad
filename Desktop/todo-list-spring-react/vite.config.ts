@@ -203,7 +203,38 @@ function vitePluginStorageProxy(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector(), vitePluginStorageProxy()];
+import { VitePWA } from 'vite-plugin-pwa';
+
+const plugins = [
+  react(),
+  tailwindcss(),
+  jsxLocPlugin(),
+  vitePluginManusRuntime(),
+  vitePluginManusDebugCollector(),
+  vitePluginStorageProxy(),
+  VitePWA({
+    registerType: 'autoUpdate',
+    includeAssets: ['logo.jpg'],
+    manifest: {
+      name: '오늘할일',
+      short_name: '오늘할일',
+      description: '종이 질감의 편집 디자인 생산성 앱',
+      theme_color: '#ffffff',
+      icons: [
+        {
+          src: '/logo.jpg',
+          sizes: '192x192',
+          type: 'image/jpeg'
+        },
+        {
+          src: '/logo.jpg',
+          sizes: '512x512',
+          type: 'image/jpeg'
+        }
+      ]
+    }
+  })
+];
 
 export default defineConfig({
   plugins,

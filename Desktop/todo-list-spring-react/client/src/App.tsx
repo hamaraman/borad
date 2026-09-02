@@ -4,7 +4,44 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { Switch, Route, Redirect } from "wouter";
+
+function ProtectedRoute({ component: Component }: { component: any }) {
+  const { user, isLoading } = useAuth();
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (!user) return <Redirect to="/login" />;
+  return <Component />;
+}
+
+function AppRoutes() {
+  return (
+    <Switch>
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/">
+        <ProtectedRoute component={Home} />
+      </Route>
+      <Route>
+        <Redirect to="/" />
+      </Route>
+    </Switch>
+  );
+}
 
 export default function App() {
-  return <ErrorBoundary><ThemeProvider defaultTheme="light"><TooltipProvider><Toaster position="bottom-right" /><Home /></TooltipProvider></ThemeProvider></ErrorBoundary>;
+  return (
+    <ErrorBoundary>
+      <ThemeProvider defaultTheme="light">
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster position="bottom-right" />
+            <AppRoutes />
+          </TooltipProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
 }
