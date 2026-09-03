@@ -220,7 +220,7 @@ const plugins = [
     },
     workbox: {
       globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff,woff2}'],
-      navigateFallback: 'index.html',
+      navigateFallback: '/index.html',
       navigateFallbackDenylist: [/^\/api\//, /^\/workbox-/],
       runtimeCaching: [
         {
