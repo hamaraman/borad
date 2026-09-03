@@ -214,7 +214,7 @@ const plugins = [
   vitePluginStorageProxy(),
   VitePWA({
     registerType: 'autoUpdate',
-    includeAssets: ['public/logo.jpg'],
+    includeAssets: ['logo.jpg', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'],
     devOptions: {
       enabled: true
     },
@@ -243,15 +243,21 @@ const plugins = [
       orientation: 'portrait-primary',
       icons: [
         {
-          src: '/logo.jpg',
+          src: '/icon-192.png',
           sizes: '192x192',
-          type: 'image/jpeg',
+          type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/logo.jpg',
+          src: '/icon-512.png',
           sizes: '512x512',
-          type: 'image/jpeg',
+          type: 'image/png',
+          purpose: 'any'
+        },
+        {
+          src: '/icon-maskable-512.png',
+          sizes: '512x512',
+          type: 'image/png',
           purpose: 'maskable'
         }
       ]

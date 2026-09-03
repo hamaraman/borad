@@ -2,9 +2,9 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { toast } from "sonner";
 import {
-  Check, ChevronLeft, ChevronRight, Clock3, Inbox, LayoutList, Plus,
+  Check, ChevronLeft, ChevronRight, Clock3, Download, Inbox, LayoutList, Plus,
   Search, SlidersHorizontal, Sparkles, Trash2, X, GripVertical,
-  LayoutGrid, List
+  LayoutGrid, List, WifiOff
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Todo, todosApi } from "@/lib/todos-api";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePWA } from "@/hooks/usePWA";
 import {
   DndContext,
   closestCenter,
@@ -172,6 +173,7 @@ function SortableItem({
 
 export default function Home() {
   const { user, logout } = useAuth();
+  const { canInstall, isOffline, install } = usePWA();
   const [todos, setTodos] = useState<Todo[]>([]);
   const [filter, setFilter] = useState<"all" | "open" | "done">("all");
   const [query, setQuery] = useState("");
@@ -381,9 +383,21 @@ export default function Home() {
               오늘할일<span>.</span>
             </h1>
           </div>
-          <Button className="new-button" onClick={openCreate}>
-            <Plus size={18} /> 새 기록
-          </Button>
+          <div className="topbar-actions">
+            {isOffline && (
+              <span className="offline-chip" title="네트워크 연결이 끊겨 오프라인 상태입니다">
+                <WifiOff size={13} /> 오프라인
+              </span>
+            )}
+            {canInstall && (
+              <Button className="install-button" onClick={() => void install()}>
+                <Download size={18} /> 앱 설치
+              </Button>
+            )}
+            <Button className="new-button" onClick={openCreate}>
+              <Plus size={18} /> 새 기록
+            </Button>
+          </div>
         </header>
 
         {/* Stats Section */}
