@@ -68,6 +68,11 @@ function SortableItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const dueDateObj = todo.dueDate ? new Date(todo.dueDate) : new Date();
+  const dateLine1 = new Intl.DateTimeFormat("ko-KR", { month: "short", day: "numeric" }).format(dueDateObj);
+  const dateLine2 = new Intl.DateTimeFormat("ko-KR", { weekday: "short" }).format(dueDateObj);
+  const dateLine3 = new Intl.DateTimeFormat("ko-KR", { hour: "2-digit", minute: "2-digit" }).format(dueDateObj);
+
   if (isListView) {
     return (
       <article
@@ -98,9 +103,6 @@ function SortableItem({
           <p>{todo.content}</p>
         </div>
         <div className="todo-meta">
-          <span className={isSoon(todo) ? "due-soon" : ""}>
-            {formatDate(todo.dueDate)}
-          </span>
           <div className="row-actions">
             <button onClick={() => onEdit(todo)} aria-label="수정">
               편집
@@ -108,6 +110,11 @@ function SortableItem({
             <button onClick={() => onRemove(todo.id)} aria-label="삭제">
               <Trash2 size={15} />
             </button>
+          </div>
+          <div className={`due-date-stack ${isSoon(todo) ? "due-soon" : ""}`}>
+            <span>{dateLine1}</span>
+            <span>({dateLine2})</span>
+            <span>{dateLine3}</span>
           </div>
         </div>
       </article>

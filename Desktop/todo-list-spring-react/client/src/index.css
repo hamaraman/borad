@@ -311,7 +311,8 @@ button:disabled { cursor: not-allowed; opacity: 0.35; }
 }
 
 /* Todo Meta */
-.todo-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #697675; font-size: 12px; }
+.todo-meta { display: flex; align-items: center; justify-content: flex-end; gap: 16px; color: #697675; font-size: 12px; }
+.due-date-stack { display: flex; flex-direction: column; text-align: right; line-height: 1.4; }
 .due-soon { color: #C35F43; font-weight: 600; }
 
 /* Row Actions */
